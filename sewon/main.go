@@ -65,6 +65,12 @@ func pointerEx() {
 	fmt.Println(b, *b)
 }
 
+func ArrayAndSliceEx() {
+	colors := []string{"red", "yellow"}
+	colors = append(colors, "orange") // append is built-in func, return updated slice
+	fmt.Println(colors)
+}
+
 func main() {
 	//	name := "sewon" // const name string = "sewon" 와 동일한 의미임, Go가 type을 예측해서 찾아줌
 	//	fmt.Println(name)
@@ -88,5 +94,7 @@ func main() {
 
 	//	fmt.Println(switchEx(18))
 
-	pointerEx()
+	//	pointerEx()
+
+	ArrayAndSliceEx()
 }
