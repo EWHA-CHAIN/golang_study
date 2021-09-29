@@ -59,6 +59,12 @@ func switchEx(age int) bool {
 	return true
 }
 
+func pointerEx() {
+	a := 2  // var a int
+	b := &a // var b *int
+	fmt.Println(b, *b)
+}
+
 func main() {
 	//	name := "sewon" // const name string = "sewon" 와 동일한 의미임, Go가 type을 예측해서 찾아줌
 	//	fmt.Println(name)
@@ -80,5 +86,7 @@ func main() {
 
 	//	fmt.Println(ifExWithVariableExpression(20))
 
-	fmt.Println(switchEx(18))
+	//	fmt.Println(switchEx(18))
+
+	pointerEx()
 }
