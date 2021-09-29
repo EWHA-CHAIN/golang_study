@@ -42,6 +42,13 @@ func forLoopExWithoutRange(numbers ...int) {
 	}
 }
 
+func ifExWithVariableExpression(age int) bool {
+	if koreanAge := age + 2; koreanAge < 18 { // variable expression
+		return false
+	}
+	return true
+}
+
 func main() {
 	//	name := "sewon" // const name string = "sewon" 와 동일한 의미임, Go가 type을 예측해서 찾아줌
 	//	fmt.Println(name)
@@ -58,6 +65,8 @@ func main() {
 
 	//	fmt.Println(deferEx("sewon"))
 
-	fmt.Println(forLoopEx(1, 2, 3, 4))
+	//	fmt.Println(forLoopEx(1, 2, 3, 4))
 	//	forLoopExWithoutRange(1, 2, 3, 4)
+
+	fmt.Println(ifExWithVariableExpression(20))
 }
