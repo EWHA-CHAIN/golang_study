@@ -71,6 +71,13 @@ func ArrayAndSliceEx() {
 	fmt.Println(colors)
 }
 
+func mapEx() {
+	info := map[string]string{"name": "apple", "age": "100"} // map[{type}]{type} : 순서대로 key, value의 타입
+	for key, value := range info {
+		fmt.Println(key, value)
+	}
+}
+
 func main() {
 	//	name := "sewon" // const name string = "sewon" 와 동일한 의미임, Go가 type을 예측해서 찾아줌
 	//	fmt.Println(name)
@@ -96,5 +103,7 @@ func main() {
 
 	//	pointerEx()
 
-	ArrayAndSliceEx()
+	//	ArrayAndSliceEx()
+
+	mapEx()
 }
