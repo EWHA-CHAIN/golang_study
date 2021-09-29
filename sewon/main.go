@@ -78,6 +78,19 @@ func mapEx() {
 	}
 }
 
+type person struct {
+	name         string
+	age          int
+	favoriteFood []string
+}
+
+func structEx() {
+	favoriteFood := []string{"kimchi", "ramen"}
+	info := person{name: "apple", age: 100, favoriteFood: favoriteFood}
+
+	fmt.Println(info)
+}
+
 func main() {
 	//	name := "sewon" // const name string = "sewon" 와 동일한 의미임, Go가 type을 예측해서 찾아줌
 	//	fmt.Println(name)
@@ -105,5 +118,7 @@ func main() {
 
 	//	ArrayAndSliceEx()
 
-	mapEx()
+	//	mapEx()
+
+	structEx()
 }
