@@ -28,6 +28,20 @@ func deferEx(name string) string {
 	return name
 }
 
+func forLoopEx(numbers ...int) int {
+	total := 0
+	for _, value := range numbers { // range gives index, value
+		total += value
+	}
+	return total
+}
+
+func forLoopExWithoutRange(numbers ...int) {
+	for i := 0; i < len(numbers); i++ {
+		fmt.Println(numbers[i])
+	}
+}
+
 func main() {
 	//	name := "sewon" // const name string = "sewon" 와 동일한 의미임, Go가 type을 예측해서 찾아줌
 	//	fmt.Println(name)
@@ -42,5 +56,8 @@ func main() {
 	//	totalLength, name := nakedReturn("hello")
 	//	fmt.Println(totalLength, name)
 
-	fmt.Println(deferEx("sewon"))
+	//	fmt.Println(deferEx("sewon"))
+
+	fmt.Println(forLoopEx(1, 2, 3, 4))
+	//	forLoopExWithoutRange(1, 2, 3, 4)
 }
