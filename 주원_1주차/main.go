@@ -45,6 +45,56 @@ func main() {
 	
 	repeatMe("soobin, yeonjun, hyuningkai")
 	
+	
+	result := superAdd(1, 2, 3, 4, 5, 6)
+	fmt.Println(result)
+
+	fmt.Println(canIDrink(16))
+
+
+	a := 2
+	b := a 
+	a = 10 
+	fmt.Println(a, b)
+
+	aa := 2
+	bb := &aa
+	aa = 5              
+	*bb = 20            
+	fmt.Println(&aa, bb) 
+	fmt.Println(aa, *bb) 
+
+	
+	names := [5]string{"nico", "lynn", "dal"}
+	names[3] = "alala"
+	names[4] = "alala"
+	//names[5] = "alala"//out of range
+	fmt.Println(names)
+
+
+	names2 := []string{"nico", "lynn", "dal"}
+	names2 = append(names2, "flynn")
+	fmt.Println(names2)
+
+	
+	nico := map[string]string{"name": "nico", "age": "12"} 
+	fmt.Println(nico)
+	for key, value := range nico {
+		fmt.Println(key, value)
+	}
+	for key, _ := range nico {
+		fmt.Println(key)
+	}
+	for _, value := range nico {
+		fmt.Println(value)
+	} 
+
+	favFood := []string{"kimchi", "ramen"}
+	//nicco := person{"nicco", 18, favFood}
+	nicco := person{name: "nicco", age: 18, favFood: favFood} 
+	fmt.Println(nicco)
+	fmt.Println(nicco.name)
+	
 	fmt.Println("Hello World!")
 	//go의 경우에는 함수를 import 하고 싶다면 function을 대문자로 시작하면 된다.
 	//fmt=formating / vscode에서는 자동 import 되는 특성
