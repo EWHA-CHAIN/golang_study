@@ -30,6 +30,83 @@ func repeatMe(words string) string{
 	return
 }
 
+func multipleArguments(words ...string) {
+	fmt.Println(words) // [ , , ... , ] 배열 형태로 출력됨
+}
+
+func nakedReturn(name string) (length int, uppercase string) { // 반환값을 리턴타입과 같이 명시함
+	length = len(name)
+	uppercase = strings.ToUpper(name)
+	return
+}
+
+func deferEx(name string) string {
+	defer fmt.Println("func is done") 
+	return name
+}
+
+func forLoopEx(numbers ...int) int {
+	total := 0
+	for _, value := range numbers { 
+		total += value
+	}
+	return total
+}
+
+func forLoopExWithoutRange(numbers ...int) {
+	for i := 0; i < len(numbers); i++ {
+		fmt.Println(numbers[i])
+	}
+}
+
+func ifExWithVariableExpression(age int) bool {
+	if koreanAge := age + 2; koreanAge < 18 { 
+		return false
+	}
+	return true
+}
+
+func switchEx(age int) bool {
+	switch koreanAge := age + 2; {
+	case koreanAge < 18:
+		return false
+	case koreanAge >= 18:
+		return true
+	}
+	return true
+}
+
+func pointerEx() {
+	a := 2  // var a int
+	b := &a // var b *int
+	fmt.Println(b, *b)
+}
+
+func ArrayAndSliceEx() {
+	colors := []string{"red", "yellow"}
+	colors = append(colors, "orange") 
+	fmt.Println(colors)
+}
+
+func mapEx() {
+	info := map[string]string{"name": "apple", "age": "100"} 
+	for key, value := range info {
+		fmt.Println(key, value)
+	}
+}
+
+type person struct {
+	name         string
+	age          int
+	favoriteFood []string
+}
+
+func structEx() {
+	favoriteFood := []string{"kimchi", "ramen"}
+	info := person{name: "apple", age: 100, favoriteFood: favoriteFood}
+
+	fmt.Println(info)
+}
 func main() {
 	// go의 진입점 (node.js, python과의 차이 )
 	// 오로지 컴파일을 위함, 컴파일 안하려면 안해도 된다!
