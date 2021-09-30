@@ -19,6 +19,16 @@ func lenAndUpper(name string)(int,string){
 }
 //go는 multiple return value의 특성 
 
+func lenAndUpper_1(name string)(length int,uppercase string){
+	length = len(name)
+	uppercase = strings.ToUpper(name)
+	return
+}
+
+func repeatMe(words string) string{
+	fmt.Println(words)
+	return
+}
 
 func main() {
 	// go의 진입점 (node.js, python과의 차이 )
@@ -28,7 +38,13 @@ func main() {
 
 	totalLength, upperName := lenAndUpper("soobin")
 	fmt.Println(totalLength,upperName)
-
+	// totalLength, _ := lenAndUpper ("soobin") -> '_'는 value 값 무시
+	
+	length, uppercase := lenAndUpper_1(4,"soobin")
+	fmt.Println(length,uppercase)
+	
+	repeatMe("soobin, yeonjun, hyuningkai")
+	
 	fmt.Println("Hello World!")
 	//go의 경우에는 함수를 import 하고 싶다면 function을 대문자로 시작하면 된다.
 	//fmt=formating / vscode에서는 자동 import 되는 특성
