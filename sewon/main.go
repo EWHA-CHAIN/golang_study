@@ -1,44 +1,42 @@
 package main // 어떤 패키지를 사용하는지 명시해줌, main.go 파일의 경우 컴파일을 위해서 필요한 것임(필수)
 import (
+	"errors"
 	"fmt"
-	"github.com/sw-develop/learngo/golang_study/sewon/dictEx"
+	"net/http"
 )
 
+var errRequestFailed = errors.New("request failed")
+
 func main() {
-
-	dictionary := dictEx.Dictionary{"first": "first word"}
-	//	def1, err1 := dictionary.Search("first") // definition, err := dictionary["first"]와 동일한 의미인데, 저렇게 작성하는게 더 좋은 코드 형태임
-	/*
-		if errs1 != nil {
-			fmt.Println(err1)
-		} else {
-			fmt.Println(def1)
-		}
-
-		err2 := dictionary.AddWord("first", "second word")
-		if err2 != nil {
-			fmt.Println(err2)
-		} else {
-			def2, _ := dictionary.Search("second")
-			fmt.Println(def2)
-		}
-	*/
-
-	baseWord := "fourth"
-	dictionary.AddWord(baseWord, "fourth word")
-	err3 := dictionary.UpdateWord(baseWord, "update next word")
-	if err3 != nil {
-		fmt.Println(err3)
-	} else {
-		value, _ := dictionary.Search(baseWord)
-		fmt.Println(value)
+	var results = make(map[string]string) // map 생성 및 초기화, make() : built-in func
+	urls := []string{
+		"https://www.airbnb.com/",
+		"https://www.google.com/",
+		"https://www.amazon.com/",
+		"https://www.reddit.com/",
+		"https://www.google.com/",
+		"https://soundcloud.com/",
+		"https://www.facebook.com/",
+		"https://www.instagram.com/",
 	}
-
-	dictionary.DeleteWord(baseWord)
-	value, err := dictionary.Search(baseWord)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(value)
+	for _, url := range urls {
+		result := "OK"
+		err := hitURL(url)
+		if err != nil {
+			result = "FAILED"
+		}
+		results[url] = result
 	}
+	for url, result := range results {
+		fmt.Println(url, result)
+	}
+}
+
+func hitURL(url string) error {
+	fmt.Println("Checking: ", url)
+	res, err := http.Get(url)
+	if err != nil || res.StatusCode >= 400 {
+		return errRequestFailed
+	}
+	return nil
 }
