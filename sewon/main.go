@@ -15,5 +15,7 @@ func main() {
 	if err != nil { // error handling in Go (직접 작성해줘야 함)
 		fmt.Println(err)
 	}
-	fmt.Println(account.GetBalance())
+	fmt.Println(account.GetBalance(), account.GetOwner())
+
+	fmt.Println(account)
 }
