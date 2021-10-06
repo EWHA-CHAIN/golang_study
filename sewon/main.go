@@ -6,11 +6,19 @@ import (
 
 func main() {
 	dictionary := dictEx.Dictionary{"first": "first word"}
-	definition, err := dictionary.Search("first") // definition, err := dictionary["first"]와 동일한 의미인데, 저렇게 작성하는게 더 좋은 코드 형태임
+	def1, err1 := dictionary.Search("first") // definition, err := dictionary["first"]와 동일한 의미인데, 저렇게 작성하는게 더 좋은 코드 형태임
 
-	if err != nil {
-		fmt.Println(err)
+	if err1 != nil {
+		fmt.Println(err1)
 	} else {
-		fmt.Println(definition)
+		fmt.Println(def1)
+	}
+
+	err2 := dictionary.AddWord("first", "second word")
+	if err2 != nil {
+		fmt.Println(err2)
+	} else {
+		def2, _ := dictionary.Search("second")
+		fmt.Println(def2)
 	}
 }
