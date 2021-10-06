@@ -1,6 +1,9 @@
 package accounts
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // Account Struct
 type Account struct {
@@ -34,4 +37,18 @@ func (account *Account) WithDraw(amount int) error {
 	}
 	account.balance -= amount
 	return nil // same with null or none
+}
+
+// ChangeOwner of the account
+func (account *Account) ChangeOwner(newOwner string) {
+	account.owner = newOwner
+}
+
+// GetOwner of the account
+func (account Account) GetOwner() string {
+	return account.owner
+}
+
+func (account Account) String() string {
+	return fmt.Sprint(account.owner, "'s account")
 }
