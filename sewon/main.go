@@ -7,27 +7,32 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type extractedJob struct {
 	id       string
 	title    string
 	location string
-	salary   string
-	summary  string
 }
 
 var baseURL string = "https://kr.indeed.com/jobs?q=python&limit=50"
 
 func main() {
+	var jobs []extractedJob
 	totalPages := getPages()
 
 	for i := 0; i < totalPages; i++ {
-		getPage(i)
+		extractedJobs := getPage(i)
+		jobs = append(jobs, extractedJobs...)
 	}
+
+	fmt.Println(jobs)
 }
 
-func getPage(pageNum int) { // pagination된 페이지 호출
+func getPage(pageNum int) []extractedJob { // pagination된 페이지 호출
+	var jobs []extractedJob
+
 	pageURL := baseURL + "&start=" + strconv.Itoa(pageNum*50)
 	fmt.Println("Requesting: ", pageURL)
 
@@ -48,11 +53,22 @@ func getPage(pageNum int) { // pagination된 페이지 호출
 	searchJobs := doc.Find(".tapItem")
 
 	searchJobs.Each(func(i int, selection *goquery.Selection) {
-		id, _ := selection.Attr("data-jk")
-		title := selection.Find("h2>span").Text()
-		location := selection.Find(".companyLocation").Text()
-		fmt.Println(id, title, location)
+		job := extractJob(selection)
+		jobs = append(jobs, job) // slice
 	})
+
+	return jobs
+}
+
+func extractJob(selection *goquery.Selection) extractedJob {
+	id, _ := selection.Attr("data-jk")
+	title := cleanString(selection.Find("h2>span").Text())
+	location := cleanString(selection.Find(".companyLocation").Text())
+
+	return extractedJob{
+		id:       id,
+		title:    title,
+		location: location}
 }
 
 func getPages() int { // pagination 수 반환
@@ -90,4 +106,8 @@ func checkHttpStatus(res *http.Response) {
 	if res.StatusCode != 200 {
 		log.Fatalln("Request failed with Status:", res.StatusCode)
 	}
+}
+
+func cleanString(str string) string { // ex) a:   b:   c:   -> "a:", "b:", "c:" -> a: b: c: (Join()의 결과)
+	return strings.Join(strings.Fields(strings.TrimSpace(str)), " ")
 }
