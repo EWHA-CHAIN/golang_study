@@ -1,14 +1,19 @@
-package main // 어떤 패키지를 사용하는지 명시해줌, main.go 파일의 경우 컴파일을 위해서 필요한 것임(필수)
+package main
+
 import (
-	"errors"
 	"fmt"
 	"net/http"
 )
 
-var errRequestFailed = errors.New("request failed")
+type requestResult struct { // http 요청 값을 저장할 구조체
+	url    string
+	status string
+}
 
 func main() {
-	var results = make(map[string]string) // map 생성 및 초기화, make() : built-in func
+	results := make(map[string]string)
+	channel := make(chan requestResult)
+
 	urls := []string{
 		"https://www.airbnb.com/",
 		"https://www.google.com/",
@@ -20,23 +25,25 @@ func main() {
 		"https://www.instagram.com/",
 	}
 	for _, url := range urls {
-		result := "OK"
-		err := hitURL(url)
-		if err != nil {
-			result = "FAILED"
-		}
-		results[url] = result
+		go hitURL(url, channel) // using goroutine
 	}
-	for url, result := range results {
-		fmt.Println(url, result)
+
+	for i := 0; i < len(urls); i++ {
+		result := <-channel
+		results[result.url] = result.status
 	}
+
+	for url, status := range results {
+		fmt.Println(url, status)
+	}
+
 }
 
-func hitURL(url string) error {
-	fmt.Println("Checking: ", url)
+func hitURL(url string, channel chan<- requestResult) { // chan<- : Send Only
 	res, err := http.Get(url)
+	status := "OK"
 	if err != nil || res.StatusCode >= 400 {
-		return errRequestFailed
+		status = "FAILED"
 	}
-	return nil
+	channel <- requestResult{url: url, status: status}
 }
