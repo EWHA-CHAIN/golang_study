@@ -37,13 +37,27 @@ func writeJobs(jobs []extractedJob) {
 	file, err := os.Create("jobs.csv")
 	checkErr(err)
 
+	// 한글 인코딩
+	utf8bom := []byte{0xEF, 0xBB, 0xBF}
+	_, encodingErr := file.Write(utf8bom)
+	checkErr(encodingErr)
+
 	w := csv.NewWriter(file)
-	defer w.Flush()
+	defer w.Flush() // defer : 지연실행
 
 	headers := []string{"ID", "TITLE", "LOCATION"}
 
 	writeErr := w.Write(headers)
 	checkErr(writeErr)
+
+	for _, job := range jobs { // _ : index, job : 요소 값
+		jobSlice := []string{
+			"https://kr.indeed.com/viewjob?jk=" + job.id,
+			job.title,
+			job.location}
+		jobWriteErr := w.Write(jobSlice)
+		checkErr(jobWriteErr)
+	}
 }
 
 func getPage(pageNum int) []extractedJob { // pagination된 페이지 호출
