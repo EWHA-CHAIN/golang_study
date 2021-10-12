@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type extractedJob struct {
@@ -21,7 +22,14 @@ type extractedJob struct {
 
 var baseURL = "https://kr.indeed.com/jobs?q=python&limit=50"
 
+func timeTrack(start time.Time, name string) {
+	elapsed := time.Since(start)
+	log.Printf("%s took %s", name, elapsed)
+}
+
 func main() {
+	defer timeTrack(time.Now(), "JobScrapper")
+
 	var jobs []extractedJob
 	totalPages := getPages()
 
