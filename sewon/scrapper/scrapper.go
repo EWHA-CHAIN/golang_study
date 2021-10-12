@@ -85,9 +85,9 @@ func getPage(pageNum int, baseURL string, mainChannel chan<- []extractedJob) { /
 
 func extractJob(selection *goquery.Selection, channel chan<- extractedJob) { // <- : send only
 	id, _ := selection.Attr("data-jk")
-	title := cleanString(selection.Find("h2>span").Text())
-	companyName := cleanString(selection.Find(".companyName").Text())
-	location := cleanString(selection.Find(".companyLocation").Text())
+	title := CleanString(selection.Find("h2>span").Text())
+	companyName := CleanString(selection.Find(".companyName").Text())
+	location := CleanString(selection.Find(".companyLocation").Text())
 
 	channel <- extractedJob{ // send to channel
 		id:          id,
@@ -161,6 +161,6 @@ func checkHttpStatus(res *http.Response) {
 	}
 }
 
-func cleanString(str string) string { // ex) a:   b:   c:   -> "a:", "b:", "c:" -> a: b: c: (Join()의 결과)
+func CleanString(str string) string { // ex) a:   b:   c:   -> "a:", "b:", "c:" -> a: b: c: (Join()의 결과)
 	return strings.Join(strings.Fields(strings.TrimSpace(str)), " ")
 }
