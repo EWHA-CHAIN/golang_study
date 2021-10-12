@@ -73,6 +73,8 @@ func writeJobs(jobs []extractedJob) {
 func getPage(pageNum int) []extractedJob { // pagination된 페이지 호출
 	var jobs []extractedJob
 
+	channel := make(chan extractedJob) // channel 생성
+
 	pageURL := baseURL + "&start=" + strconv.Itoa(pageNum*50)
 	fmt.Println("Requesting: ", pageURL)
 
@@ -93,20 +95,24 @@ func getPage(pageNum int) []extractedJob { // pagination된 페이지 호출
 	searchJobs := doc.Find(".tapItem")
 
 	searchJobs.Each(func(i int, selection *goquery.Selection) {
-		job := extractJob(selection)
-		jobs = append(jobs, job) // slice
+		go extractJob(selection, channel) // goroutine 적용
 	})
+
+	for i := 0; i < searchJobs.Length(); i++ {
+		job := <-channel
+		jobs = append(jobs, job)
+	}
 
 	return jobs
 }
 
-func extractJob(selection *goquery.Selection) extractedJob {
+func extractJob(selection *goquery.Selection, channel chan<- extractedJob) { // <- : send only
 	id, _ := selection.Attr("data-jk")
 	title := cleanString(selection.Find("h2>span").Text())
 	companyName := cleanString(selection.Find(".companyName").Text())
 	location := cleanString(selection.Find(".companyLocation").Text())
 
-	return extractedJob{
+	channel <- extractedJob{ // send to channel
 		id:          id,
 		title:       title,
 		companyName: companyName,
