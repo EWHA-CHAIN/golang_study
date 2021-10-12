@@ -31,46 +31,23 @@ func main() {
 	defer timeTrack(time.Now(), "JobScrapper")
 
 	var jobs []extractedJob
+	mainChannel := make(chan []extractedJob)
 	totalPages := getPages()
 
 	for i := 0; i < totalPages; i++ {
-		extractedJobs := getPage(i)
-		jobs = append(jobs, extractedJobs...)
+		go getPage(i, mainChannel)
+	}
+
+	for i := 0; i < totalPages; i++ {
+		extractedJob := <-mainChannel
+		jobs = append(jobs, extractedJob...)
 	}
 
 	writeJobs(jobs)
 	fmt.Println("Done, extracted : ", len(jobs))
 }
 
-func writeJobs(jobs []extractedJob) {
-	file, err := os.Create("jobs.csv")
-	checkErr(err)
-
-	// 한글 인코딩
-	utf8bom := []byte{0xEF, 0xBB, 0xBF}
-	_, encodingErr := file.Write(utf8bom)
-	checkErr(encodingErr)
-
-	w := csv.NewWriter(file)
-	defer w.Flush() // defer : 지연실행
-
-	headers := []string{"LINK", "TITLE", "COMPANY_NAME", "LOCATION"}
-
-	writeErr := w.Write(headers)
-	checkErr(writeErr)
-
-	for _, job := range jobs { // _ : index, job : 요소 값
-		jobSlice := []string{
-			"https://kr.indeed.com/viewjob?jk=" + job.id,
-			job.title,
-			job.companyName,
-			job.location}
-		jobWriteErr := w.Write(jobSlice)
-		checkErr(jobWriteErr)
-	}
-}
-
-func getPage(pageNum int) []extractedJob { // pagination된 페이지 호출
+func getPage(pageNum int, mainChannel chan<- []extractedJob) { // pagination된 페이지 호출
 	var jobs []extractedJob
 
 	channel := make(chan extractedJob) // channel 생성
@@ -103,7 +80,7 @@ func getPage(pageNum int) []extractedJob { // pagination된 페이지 호출
 		jobs = append(jobs, job)
 	}
 
-	return jobs
+	mainChannel <- jobs
 }
 
 func extractJob(selection *goquery.Selection, channel chan<- extractedJob) { // <- : send only
@@ -142,6 +119,34 @@ func getPages() int { // pagination 수 반환
 	})
 
 	return pages
+}
+
+func writeJobs(jobs []extractedJob) {
+	file, err := os.Create("jobs.csv")
+	checkErr(err)
+
+	// 한글 인코딩
+	utf8bom := []byte{0xEF, 0xBB, 0xBF}
+	_, encodingErr := file.Write(utf8bom)
+	checkErr(encodingErr)
+
+	w := csv.NewWriter(file)
+	defer w.Flush() // defer : 지연실행
+
+	headers := []string{"LINK", "TITLE", "COMPANY_NAME", "LOCATION"}
+
+	writeErr := w.Write(headers)
+	checkErr(writeErr)
+
+	for _, job := range jobs { // _ : index, job : 요소 값
+		jobSlice := []string{
+			"https://kr.indeed.com/viewjob?jk=" + job.id,
+			job.title,
+			job.companyName,
+			job.location}
+		jobWriteErr := w.Write(jobSlice)
+		checkErr(jobWriteErr)
+	}
 }
 
 func checkErr(err error) { // 에러 처리
