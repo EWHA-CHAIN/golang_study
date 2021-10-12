@@ -13,9 +13,10 @@ import (
 )
 
 type extractedJob struct {
-	id       string
-	title    string
-	location string
+	id          string
+	title       string
+	companyName string
+	location    string
 }
 
 var baseURL = "https://kr.indeed.com/jobs?q=python&limit=50"
@@ -45,7 +46,7 @@ func writeJobs(jobs []extractedJob) {
 	w := csv.NewWriter(file)
 	defer w.Flush() // defer : 지연실행
 
-	headers := []string{"ID", "TITLE", "LOCATION"}
+	headers := []string{"LINK", "TITLE", "COMPANY_NAME", "LOCATION"}
 
 	writeErr := w.Write(headers)
 	checkErr(writeErr)
@@ -54,6 +55,7 @@ func writeJobs(jobs []extractedJob) {
 		jobSlice := []string{
 			"https://kr.indeed.com/viewjob?jk=" + job.id,
 			job.title,
+			job.companyName,
 			job.location}
 		jobWriteErr := w.Write(jobSlice)
 		checkErr(jobWriteErr)
@@ -93,12 +95,14 @@ func getPage(pageNum int) []extractedJob { // pagination된 페이지 호출
 func extractJob(selection *goquery.Selection) extractedJob {
 	id, _ := selection.Attr("data-jk")
 	title := cleanString(selection.Find("h2>span").Text())
+	companyName := cleanString(selection.Find(".companyName").Text())
 	location := cleanString(selection.Find(".companyLocation").Text())
 
 	return extractedJob{
-		id:       id,
-		title:    title,
-		location: location}
+		id:          id,
+		title:       title,
+		companyName: companyName,
+		location:    location}
 }
 
 func getPages() int { // pagination 수 반환
